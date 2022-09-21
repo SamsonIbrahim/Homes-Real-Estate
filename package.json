@@ -1,0 +1,38 @@
+{
+  "name": "homes-real-estate",
+  "version": "1.0.0",
+  "description": "Real Estate Eccomerce Website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SamsonIbrahim/Homes-Real-Estate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SamsonIbrahim/Homes-Real-Estate/issues"
+  },
+  "homepage": "https://github.com/SamsonIbrahim/Homes-Real-Estate#readme",
+  "dependencies": {
+    "nodemon": "^2.0.20",
+    "app-root-path": "^3.1.0",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "helmet": "^6.0.0",
+    "joi": "^17.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.5.4",
+    "mongoose-paginate": "^5.0.3",
+    "mongoose-paginate-v2": "^1.7.1",
+    "morgan": "^1.10.0",
+    "winston": "^3.8.2"
+  }
+}
