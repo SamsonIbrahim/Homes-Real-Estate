@@ -24,27 +24,15 @@ class AdminService {
 
   static async signUpAdminService(data) {
     try {
-      const { email, password, firstName, lastName } = data;
-
-      const admin = AdminModel.findOne({ email, password });
+      const { email, password } = data;
+      const admin = await AdminManager.getAdminByEmail(email);
       if (admin)
-        return {
-          message: "admin already exists",
-          statusCode: 409,
-        };
-      //  register new admin
-      const hash = await HelperFunction.hashPassword(password);
-      const registeredAdmin = await AdminManager.createAdmin({
-        email,
-        firstName,
-        lastName,
-        password: hash,
-      });
-      return {
-        data: registeredAdmin,
-        statusCode: 201,
-        message: "Admin created successfully",
-      };
+        return errorResponse(res, 409, "Admin already exist, please login");
+      // hash password
+      const hashedPassword = await HelperFunction.hashPassword(password);
+      const newAdmin = new Admin(email, hashedPassword);
+      const result = await AdminManager.createAdmin(newAdmin);
+      return successResponse(res, 201, "Admin successfully created", result);
     } catch (error) {
       logger.info(error.message);
       return errorResponse(res, 500, "Internal Server Error");
@@ -53,14 +41,21 @@ class AdminService {
 
   static async signInAdminService(req, res) {
     try {
+      // get admin from db
       const { email, password } = req.body;
-
-      const admin = await AdminModel.findOne({ email, password });
+      const admin = await AdminManager.getAdminByEmail(email);
       if (!admin)
-        return {
-          message: "admin not found",
-          statusCode: 409,
-        };
+        return errorResponse(res, 401, "Admin does not exist, please signup");
+      // check if password is correct
+      const isPasswordCorrect = await HelperFunction.comparePassword(
+        password,
+        admin.password
+      );
+      if (!isPasswordCorrect)
+        return errorResponse(res, 401, "Invalid password");
+      // generate token
+      const token = generateToken(admin.id);
+      return successResponse(res, 200, "Admin successfully signed in", token);
     } catch (error) {
       logger.info(error.message);
       return errorResponse(res, 500, "Internal Server Error");
