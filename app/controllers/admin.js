@@ -32,18 +32,20 @@ class adminController {
   static async signInAdminController(req, res) {
     try {
       const result = await AdminService.signInAdminService(req.body);
-      logger.info(`Admin Succesfully signIn ${JSON.stringify(result)}`);
-      if (result.statusCode === 409)
+      logger.info(`Admin Succesfully SignIn ${JSON.stringify(result)}`);
+      if (result.statusCode === 401)
         return errorResponse(res, result.statusCode, result.message);
       return successResponse(
         res,
         result.statusCode,
-        "Admin successfully signIn",
+        "Admin successfully SignIn",
         result.data
       );
+      
     } catch (error) {
       logger.info(`Admin Controller error ${JSON.stringify(error.message)}`);
       return errorResponse(res, 500, error.message);
+      
     }
   }
 }

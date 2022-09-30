@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { error } = require("winston");
 
 class Token {
   /**
@@ -17,11 +18,11 @@ class Token {
     };
     try {
       const token = jwt.sign(payload, JWTSECRET, options);
-      logger.info("token Successfully created");
+      // logger.info("token Successfully created");
       return token;
     } catch (err) {
-      logger.error(`Error generating token ${JSON.stringify(err)}`);
-      return "Error generating token";
+      // logger.error(`Error generating token ${JSON.stringify(err)}`);
+      return error.message;
     }
   }
 
@@ -48,6 +49,27 @@ class Token {
       }
       logger.error(`Invalid Token${JSON.stringify(err)}`);
       return { message: "Invalid Token", statusCode: 400 };
+    }
+  }
+
+  /**
+   * Validate userToken and see if they exist
+   * @param {String} decoded.subject - The user Id
+   * @returns {User} - The userInformation token or null
+   */
+  static async decodeToken(token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await UserModel.findById(decoded.subject);
+      if (!user) {
+        return {
+          statusCode: 401,
+          message: "Invalid token",
+        };
+      }
+      return user;
+    } catch (error) {
+      return null;
     }
   }
 }
