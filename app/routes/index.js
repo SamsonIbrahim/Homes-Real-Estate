@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 const adminRoutes = require("./admin");
+const userRoutes = require("./user");
 const logger = require("../config/logger");
 const morgan = require("morgan");
 
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("combined", { stream: logger.stream }));
 
 app.use("/admin", adminRoutes);
+app.use("/user", userRoutes);
 
 app.get("/", (req, res) => {
   const welcomeText =
